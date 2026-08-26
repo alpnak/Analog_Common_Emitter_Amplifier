@@ -1,70 +1,35 @@
-# 🔈 Analog Elektronik Devreler: 4-Fazlı Ses Yükseltici Devre Tasarımı
+# 4-Stage Analog Common Emitter Amplifier Design and Analysis With LTspice & KiCad
 
-![Project Status](https://img.shields.io/badge/Status-Completed-success)
-![Hardware](https://img.shields.io/badge/Hardware-Audio_Amplifier-blue)
-![EDA](https://img.shields.io/badge/EDA-LTspice_%7C_KiCad-orange)
+This project details the end-to-end design of a four-stage audio amplifier, developed as part of the "ELE 311 - Analog Electronic Circuits" course. The work spans theoretical mathematical analysis, detailed SPICE simulations, physical breadboard prototyping, and a final industrial-standard PCB design. By meticulously documenting the analytical computations, simulation data, and real-world test results, this repository is structured to serve as a robust, open-source foundation for upcoming theoretical electricity and electronics educational content‚Äîspecifically designed to be produced using computer graphics and text-to-speech tools rather than traditional camera recordings.
 
-## 📖 Proje Hakkında
-Bu proje, "ELE 311 - Analog Elektronik Devreler" dersi kapsamında geliştirilmiş, dört fazdan oluşan uçtan uca bir ses yükseltici (audio amplifier) tasarımıdır. Çalışma; teorik matematiksel analizleri, detaylı SPICE simülasyonlarını, fiziksel breadboard prototiplemesini ve endüstriyel üretim standartlarındaki nihai PCB tasarımını içermektedir.
+## üöÄ Project Phases
 
-Elde edilen detaylı analizler, simülasyon verileri ve test sonuçları, ilerleyen dönemde kamera kullanılmadan tamamen bilgisayar grafikleri ve metin-okuma (text-to-speech) araçlarıyla üretilecek teorik elektrik ve elektronik eğitim içeriklerine sağlam bir kaynak oluşturması amacıyla açık kaynak olarak sunulmaktadır.
+### Phase 1: Common Emitter (CE) Stage Design
+**Objective:** Design the foundational first gain stage of the audio amplifier using a Common Emitter configuration to provide high voltage gain.
+**Details:** This initial phase focuses on establishing a stable DC operating point, performing AC small-signal analysis, and calculating the upper and lower cutoff frequencies for a band-pass characteristic. Utilizing ideal transistor parameters ($ eta = 180$) and a $\pm 15V$ dual supply, the stage is engineered to deliver a targeted voltage gain ($|A_v| \ge 30$) and an output voltage swing of 22-24V peak-to-peak. The design ensures the frequency response encompasses the standard audio band ($f_L \le 20 	ext{ Hz}$, $f_H \ge 20 	ext{ kHz}$) and is thoroughly verified through LTspice simulations (.op, .ac, .tran).
 
----
+![Phase 1 Schematic](insert_image_link_here)
 
-## 🚀 Proje Fazları
+### Phase 2: Emitter Follower (EF) and Multistage Cascading
+**Objective:** Introduce an Emitter Follower (buffer) stage to prevent loading effects between stages and successfully transition into a multistage cascaded architecture.
+**Details:** To meet higher amplification requirements, the system is expanded by cascading two Common Emitter stages followed by an Emitter Follower stage. This configuration acts as a buffer, ensuring proper impedance matching and preserving the signal integrity across stages. The selection of appropriate inter-stage coupling capacitors is critical here to maintain the 20 Hz - 20 kHz audio band requirements. The combined multistage system is designed to achieve a total voltage gain of $A_v \ge 200$ and a maximum output swing exceeding 20V peak-to-peak, all while maintaining strict power dissipation limits for each resistor ($< 0.2W$).
 
-### Faz 1: Ortak Emetör (Common Emitter) Katı Tasarımı
-- **Amaç:** Ses sinyalini güçlendirmek adına yüksek gerilim kazancı sağlayan ilk katın tasarlanması.
-- **Detaylar:** DC çalışma noktası stabilizasyonu, küçük-sinyal (AC) analizi, ve bant geçiren filtre karakteristiği için alt/üst kesim frekans hesaplamaları.
-- **Kazanım:** LTspice simülasyonları (.op, .ac, .tran) ile kağıt üzerindeki analitik hesapların (%5 tolerans altında) tam uyuşumunun kanıtlanması.
+![Phase 2 Schematic](insert_image_link_here)
 
-### Faz 2: Emetör Takipçisi (Emitter Follower) ve Kaskat Yapı
-- **Amaç:** Katlar arası yükleme etkisini önlemek için tampon (buffer) katının tasarlanması ve çok katlı kaskat yapıya (Cascade) geçiş.
-- **Detaylar:** İki ortak emetör katının ardışıl bağlanması, emetör takipçisi ile empedans uyumunun sağlanması ve uygun kuplaj kapasitörlerinin seçimi.
-- **Kazanım:** Sistemin gerilim kazancının hedeflenen seviyelere çıkarılması ve 20 Hz - 20 kHz ses bandı şartlarının eksiksiz karşılanması.
+### Phase 3: Class AB Power Stage, Real Transistor Selection, and Full System Integration
+**Objective:** Design a Class AB push-pull output stage capable of driving an $8 \Omega$ speaker load, transition from ideal SPICE models to real-world commercial BJTs, and finalize the complete 4-stage architecture.
+**Details:** The final system architecture consists of two CE gain stages, one EF buffer stage, and a Class AB power output stage. This phase involves extensive datasheet analysis to replace the initial ideal transistors with physical components that meet the required thermal stability, current capacity, and gain bandwidth products. The Class AB stage utilizes a complementary push-pull pair with diode biasing to eliminate crossover distortion. The finalized full system targets a total voltage gain of $> 1000$ and an output power of $\ge 2	ext{W}$ over the $8 \Omega$ load, while keeping total system power consumption under 10W.
 
-### Faz 3: Sınıf AB (Class AB) Güç Katı ve Gerçek Parametrelere Geçiş
-- **Amaç:** 8 Ω empedanslı bir hoparlörü sürebilmek için Sınıf AB push-pull güç katı tasarımı ve ideal $\beta$ değerlerinden piyasadaki gerçek BJT'lere geçiş.
-- **Detaylar:** BC546B (Giriş/Ortak Emetör), BD139-16 (Emetör Takipçisi), BD139 ve BD140 (Push-Pull Güç Katı) transistörlerinin sisteme entegrasyonu. Çapraz geçiş (crossover) distorsiyonunun 1N4148 diyot öngerilimlemesi ile yok edilmesi.
-- **Kazanım:** Simülasyonlarda 65.5 dB (1883 V/V) toplam kazanç, ~2.5 W çıkış gücü ve distorsiyonsuz, lineer sinyal aktarımının elde edilmesi.
+**Components Selected in this Phase:**
+*   **Input and Intermediate Gain Stages (CE):** `BC546B` (Chosen for high $V_{CEO}$ breakdown voltage and stable current gain).
+*   **Driver / Buffer Stage (EF):** `BD139-16` (Selected for its thermal stability and medium-power endurance).
+*   **Power Stage (Class AB Push-Pull):** `BD139` (NPN) & `BD140` (PNP) complementary pair.
+*   **Biasing:** `1N4148` fast-switching diodes.
 
-### Faz 4: Fiziksel Gerçekleme, Ölçüm ve PCB Tasarımı
-- **Amaç:** Bilgisayar ortamındaki tasarımın fiziksel dünyada doğrulanması ve profesyonel bir donanıma dönüştürülmesi.
-- **Detaylar:** Parazitik etkilere karşı breadboard kurulumu, osiloskop ve multimetre ölçümleri ile sistemin test edilmesi. KiCad EDA yazılımı ile iki katmanlı (Top & Bottom), termal tahliye alanlarına (Heat Sink) sahip PCB tasarımının tamamlanması.
-- **Kazanım:** İdeal dışı fiziksel koşullarda 0.179 V gibi son derece düşük bir DC ofset, yüksek frekans osilasyonlarından arındırılmış temiz bir çıkış ve Design Rules Check (DRC) onaylı üretim dosyalarının çıkarılması.
+![Phase 3 Schematic](insert_image_link_here)
 
----
+### Phase 4: Physical Implementation, Measurement, and PCB Design
+**Objective:** Validate the theoretical and simulated designs in the physical world and convert the validated circuit into a professional printed circuit board (PCB).
+**Details:** The complete amplifier is prototyped on a breadboard to assess real-world performance against parasitic effects, thermal drift, and component tolerances. Key metrics, including DC offset, signal gain, output power, and frequency response, are physically measured using an oscilloscope and multimeter. Following successful breadboard validation, a 2-layer (Top & Bottom) PCB layout is designed using KiCad EDA. The PCB design adheres to strict design rules, incorporating minimum trace widths for power (1 mm) and signal lines (0.3 mm), as well as dedicated thermal relief (heat sink) zones for the power transistors, ensuring a zero-error Design Rules Check (DRC).
 
-## 🛠️ Sistem Bileşenleri
-
-* **Giriş ve Ara Kazanç Katı:** `BC546B` (Yüksek $V_{CEO}$ dayanımı ve kararlı akım kazancı için)
-* **Sürücü / Buffer Katı:** `BD139-16` (Termal kararlılık ve orta-güç dayanımı için)
-* **Güç Katı (Push-Pull):** `BD139` (NPN) & `BD140` (PNP) komplementer çifti
-* **Öngerilimleme:** `1N4148` hızlı anahtarlama diyotları
-* **Güç Kaynağı:** $\pm15V$ Simetrik Besleme
-* **Çıkış Yükü:** $8\Omega$ (Hoparlör eşdeğeri)
-
----
-
-## 📊 Nihai Performans Tablosu
-
-| Parametre | Proje Hedefi | Gerçekleşen (Fiziksel Ölçüm) |
-| :--- | :--- | :--- |
-| **Gerilim Kazancı ($A_v$)** | $\ge 1000$ | **1884 V/V (65.5 dB)** |
-| **Çıkış Gücü (8 $\Omega$)** | $\ge 2 W$ | **2.1 W** |
-| **Düşük Kesim Frekansı ($f_L$)**| $< 20 Hz$ | **17.5 Hz** |
-| **Yüksek Kesim Frekansı ($f_H$)**| $\ge 20 kHz$ | **23.5 kHz** |
-| **Sistem Güç Tüketimi ($P_S$)** | $< 10 W$ | **1.8 W** |
-| **Giriş Empedansı ($R_{in}$)** | - | **17 k$\Omega$** |
-| **DC Çıkış Ofseti** | $0 V$ (İdeal) | **0.179 V** |
-
----
-
-## 🤖 Yapay Zeka Entegrasyonu & Prompt Mühendisliği
-Bu proje boyunca modern yapay zeka araçları (Google Gemini & OpenAI ChatGPT), iteratif bir mühendislik danışmanı olarak sürece dahil edilmiştir. Basit soru-cevaplardan ziyade, katı "Prompt Şartnameleri" uygulanmıştır:
-1. Gerçek BJT modellerinin datasheet verilerinin yorumlanması ve SPICE modellerinin (.model directive) sentetik olarak oluşturulması.
-2. Sınır durum hesaplamalarında (worst-case scenario), güç tüketimi ve maksimum kırpılmasız salınım ($V_{pp}$) limitleri için matematiksel ispatların yaptırılması.
-3. Breadboard prototiplemesinde karşılaşılan ısıl kaymalar, direnç tolerans sorunları ve parazitik geri beslemelerin (osilasyon) hata ayıklama (debugging) süreçlerinin yönetilmesi.
-
-## 📝 Lisans
-Bu depo, akademik proje süreçlerini belgelemek amacıyla oluşturulmuştur. Şemalar, analizler ve PCB dosyaları, eğitim ve gelişim amacıyla açık kaynak olarak kullanılabilir.
+![Phase 4 Schematic and PCB](insert_image_link_here)
